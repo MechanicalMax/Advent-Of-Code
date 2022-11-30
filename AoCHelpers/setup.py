@@ -1,0 +1,1 @@
+#Create a new AoC file from a template

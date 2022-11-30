@@ -1,5 +1,6 @@
 from aocd.models import Puzzle
 
+#Provide a way to automatically submit the puzzle answer to the correct part
 def safeSubmit(puzzle: Puzzle, answer: int, part):
     if(input(f'Ready to submit part {part}? [{answer}] (Y/n)\n') == 'Y'):
         if(part == 'a'):
