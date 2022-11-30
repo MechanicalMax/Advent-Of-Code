@@ -1,6 +1,6 @@
 import AoCHelpers.setupUtilities.submition as submit
-from aocd.models import Puzzle
-puz = Puzzle(year=2021, day=1)
+import AoCHelpers.setupUtilities.getPuzzleObject as getPuzzle
+puz = getPuzzle.getPuzzleObject(__file__)
 
 def partA(puz):
     ans = 0
