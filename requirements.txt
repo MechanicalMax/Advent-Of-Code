@@ -1,1 +1,1 @@
-advent-of-code-data==1.2.1
+advent-of-code-data==1.2.2
