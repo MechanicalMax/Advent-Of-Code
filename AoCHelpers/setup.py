@@ -18,8 +18,8 @@ def _createToday():
 
 def _newDay(year=int, day=int):
     #if today is valid
-    if (year in range(2015,dateToday.year)):
-        if(day in range(1,25)):
+    if (year in range(2015, dateToday.year + 1)):
+        if(day in range(1,26)):
             #copy template file and paste to main folder
             targetPath = os.path.join(MAINDIR, f'AoC{year}d{day}.py')
 
