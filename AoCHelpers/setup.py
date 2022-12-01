@@ -28,8 +28,13 @@ def _newDay(year=int, day=int):
             else:
                 shutil.copy(os.path.join(TEMPLATEDIR, 'TemplateAoC.py'), targetPath)
 
-            #open the new file in vscode and return the puzzle object to calling function
-            os.system(f'code "{targetPath}"')
+            #try to open the new file in vscode
+            try:
+                os.system(f'code "{targetPath}" -n -a "{os.path.split(MAINDIR)[0]}"')
+            except:
+                print("Opening new file in vs code failed")
+
+            #return the puzzle object to calling function
             puzzleOfDay = Puzzle(year, day)
             return puzzleOfDay
         else:
