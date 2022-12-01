@@ -1,5 +1,7 @@
 import AoCHelpers.setupUtilities.submition as submit
 import AoCHelpers.setupUtilities.getPuzzleObject as getPuzzle
+from aocd import lines
+
 puz = getPuzzle.getPuzzleObject(__file__)
 
 def partA(puz):
