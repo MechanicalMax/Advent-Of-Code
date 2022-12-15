@@ -1,11 +1,13 @@
 import AoCHelpers.setupUtilities.submition as submit
 import AoCHelpers.setupUtilities.getPuzzleObject as getPuzzle
 from aocd import lines
+import math
 
 puz = getPuzzle.getPuzzleObject(__file__)
 
 class Monkey:
-    def __init__(self, items, operation, operationConstant, divisibilty, trueMonkey, falseMonkey):
+    def __init__(self, part, items, operation, operationConstant, divisibilty, trueMonkey, falseMonkey):
+        self.part = part
         self.items = items
         self.operation = operation
         self.operationConstant = operationConstant
@@ -14,13 +16,20 @@ class Monkey:
         self.falseMonkey = int(falseMonkey)
         self.inspections = 0
 
-    def inspectItems(self):
+    def inspectItems(self, lcm):
         newItemLocations = []
         newItems = []
         for item in self.items:
             item = self.applyOperation(item)
             self.inspections += 1
-            item //= 3
+            
+            if self.part == 'a':
+                item //= 3
+            elif self.part == 'b':
+                item %= lcm
+            else:
+                print(f"{self.part} is invalid")
+
             if self._checkDivisibility(item):
                 newItemLocations.append(self.trueMonkey)
             else:
@@ -51,14 +60,13 @@ class Monkey:
         multiple = self._getMultiple(number)
         return number + multiple
 
-def createMonkeys(lns):
+def createMonkeys(lns, part):
     monkeyArray = []
-    currentMonkeyInfo = []
 
     for lnum in range(len(lns)):
         multiple = (lnum+7) % 7
         if multiple == 0:
-            currentMonkeyInfo = []
+            currentMonkeyInfo = [part]
         elif multiple == 1:
             currentMonkeyInfo.append(getStartingItemsArray(lns[lnum]))
         elif multiple == 2:
@@ -76,10 +84,10 @@ def createMonkeys(lns):
 
     return monkeyArray
 
-def simulateNextRound(monkeyArray):
+def simulateNextRound(monkeyArray, lcm):
     for i in range(len(monkeyArray)):
         monkey = monkeyArray[i]
-        pointers = monkey.inspectItems()
+        pointers = monkey.inspectItems(lcm)
         for pointer in pointers:
             monkeyArray[pointer].items.append(monkey.items.pop(0))
     return monkeyArray
@@ -97,20 +105,29 @@ def calculateMonkeyBusiness(mArr):
                 break
     return maxCounts[0] * maxCounts[1]
 
-def simulateRounds(lns, rounds):
-    monkeyArray = createMonkeys(lns)
-    
+def getLCM(monkeyArray):
+    divisibilities = []
+    for monkey in monkeyArray:
+        divisibilities.append(monkey.divisibility)
+    return math.lcm(*divisibilities)
+
+def simulateRounds(lns, part):
+    monkeyArray = createMonkeys(lns, part)
+    rounds = 20 if part == 'a' else 10000
+    lcm = 0 if part == 'a' else getLCM(monkeyArray)
+
     for round in range(rounds):
-        monkeyArray = simulateNextRound(monkeyArray)
+        monkeyArray = simulateNextRound(monkeyArray, lcm)
 
     return calculateMonkeyBusiness(monkeyArray)    
 
 def partA(puz):
-    ans = simulateRounds(lines, 20)
+    ans = simulateRounds(lines, 'a')
     submit.safeSubmit(puz, ans, 'a')
 
 def partB(puz):
-    ans = 0
+    ans = simulateRounds(lines, 'b')
     submit.safeSubmit(puz, ans, 'b')
 
 partA(puz)
+partB(puz)
