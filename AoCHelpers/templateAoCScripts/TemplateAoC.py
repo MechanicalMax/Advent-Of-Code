@@ -11,3 +11,6 @@ def partA(puz):
 def partB(puz):
     ans = 0
     submit.safeSubmit(puz, ans, 'b')
+
+#partA(puz)
+#partB(puz)
