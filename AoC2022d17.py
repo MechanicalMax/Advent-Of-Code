@@ -52,14 +52,19 @@ def calculateHeightAfterRocks(jetPattern, maxRocks=2022):
                 rockY = potentialY
             else:
                 canMove = False
-                
-        # add rock border to solid rocks
+
+        #Add rock border to solid rocks
         for offset in rocks[rockIndex]:
             position = (rockX + offset[0], rockY + offset[1])
             solidRocks[position[0]].append(position[1])
+        
+        #Get floor
         for x in range(len(floor)):
             floor[x] = max(solidRocks[x])
 
+    #for l in solidRocks:
+    #    print(l)
+    #print(floor)
     height = max(floor)
     return height
 
