@@ -28,6 +28,7 @@ def hitSolid(rockNum, x, y, solidRocks):
 
 def calculateHeightAfterRocks(jetPattern, maxRocks=2022):
     floor = [0 for _ in range(0, 7)]
+    relativeFloor = [0 for _ in range(0, 7)]
     solidRocks = [[0] for _ in range(0, 7)]
     moveIndex = 0
     height = 0
@@ -61,10 +62,18 @@ def calculateHeightAfterRocks(jetPattern, maxRocks=2022):
         #Get floor
         for x in range(len(floor)):
             floor[x] = max(solidRocks[x])
+        #Get Relative Floor
+        minY = min(floor)
+        for floorI, floorVal in enumerate(floor):
+            relativeFloor[floorI] = floorVal - minY
+        if rockNum % 500 == 0:
+            print(floor)
+            print(relativeFloor)
 
     #for l in solidRocks:
     #    print(l)
-    #print(floor)
+    print(floor)
+    print(relativeFloor)
     height = max(floor)
     return height
 
