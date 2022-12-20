@@ -38,21 +38,21 @@ def calculateHeightAfterRocks(jetPattern, maxRocks=2022):
         canMove = True
         
         while(canMove):
-            currentMove = jetPattern[moveIndex%len(jetPattern)]
-            moveIndex += 1
-            if currentMove == '<':
-                potentialX = rockX - 1
-            else:
-                potentialX = rockX + 1
+            currentMove = jetPattern[moveIndex]
+            moveIndex = (moveIndex+1)%len(jetPattern)
 
+            #Move along x
+            potentialX = rockX + 1 - 2 * (currentMove == '<')
             if(not hitSolid(rockIndex, potentialX, rockY, solidRocks)):
                 rockX = potentialX
 
+            #Move along y
             potentialY = rockY - 1
             if(not hitSolid(rockIndex, rockX, potentialY, solidRocks)):
                 rockY = potentialY
             else:
                 canMove = False
+                
         # add rock border to solid rocks
         for offset in rocks[rockIndex]:
             position = (rockX + offset[0], rockY + offset[1])
