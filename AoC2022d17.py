@@ -27,13 +27,16 @@ def hitSolid(rockNum, x, y, solidRocks):
     return False
 
 def calculateHeightAfterRocks(jetPattern, maxRocks=2022):
-    floor = [0 for _ in range(0, 7)]
     relativeFloor = [0 for _ in range(0, 7)]
+    floor = [0 for _ in range(0, 7)]
     solidRocks = [[0] for _ in range(0, 7)]
+    cache = {}
+    additionalHeight = 0
     moveIndex = 0
+    rockNum = 0
     height = 0
 
-    for rockNum in range(maxRocks):
+    while rockNum < maxRocks:
         rockIndex = rockNum % len(rocks)
         rockX, rockY = 2, max(floor) + 4
         canMove = True
@@ -54,28 +57,39 @@ def calculateHeightAfterRocks(jetPattern, maxRocks=2022):
             else:
                 canMove = False
 
+        #Rest
         #Add rock border to solid rocks
         for offset in rocks[rockIndex]:
             position = (rockX + offset[0], rockY + offset[1])
             solidRocks[position[0]].append(position[1])
-        
+
         #Get floor
         for x in range(len(floor)):
             floor[x] = max(solidRocks[x])
+
         #Get Relative Floor
         minY = min(floor)
         for floorI, floorVal in enumerate(floor):
             relativeFloor[floorI] = floorVal - minY
-        if rockNum % 500 == 0:
-            print(floor)
-            print(relativeFloor)
 
-    #for l in solidRocks:
-    #    print(l)
-    print(floor)
-    print(relativeFloor)
-    height = max(floor)
-    return height
+        #Add to cache
+        info = (rockIndex, moveIndex, tuple(relativeFloor))
+        if info not in cache:
+            cache[info] = (height, rockNum)
+            #Add to height
+            height += max(floor) - height
+        else:
+            initialHeight, initialRockNum = cache[info]
+            deltaHeight = height - initialHeight
+            deltaRocks = rockNum - initialRockNum
+            remainingCycles = (maxRocks - rockNum) // deltaRocks
+            additionalHeight = remainingCycles * deltaHeight
+            remainingRocks = maxRocks - rockNum - remainingCycles * deltaRocks
+            rockNum = maxRocks - remainingRocks
+            cache = {}
+        rockNum +=1
+
+    return height + additionalHeight
 
 def partA(puz):
     ans = calculateHeightAfterRocks(lines[0].strip())
@@ -85,9 +99,5 @@ def partB(puz):
     ans = calculateHeightAfterRocks(lines[0].strip(), 1000000000000)
     submit.safeSubmit(puz, ans, 'b')
 
-example = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
-
-print(calculateHeightAfterRocks(example), 3068)
-print(calculateHeightAfterRocks(lines[0].strip()), 3071)
-#partA(puz)
-#partB(puz)
+partA(puz)
+partB(puz)
