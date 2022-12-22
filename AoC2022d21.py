@@ -16,13 +16,15 @@ def getMonkeys(lns):
             monkeys[name] = monkeyOpp
     return monkeys
 
-def getMonkeyValue(name, monkeys):
+def getMonkeyValue(name, monkeys, includesHuman = False):
     if type(monkeys[name]) == int:
-        return monkeys[name]
+        if name == 'humn':
+            includesHuman = True
+        return monkeys[name], includesHuman
     else:
         firstName, opp, secondName = monkeys[name]
-        firstMonkey = getMonkeyValue(firstName, monkeys)
-        secondMonkey = getMonkeyValue(secondName, monkeys)
+        firstMonkey, includesHuman = getMonkeyValue(firstName, monkeys, includesHuman)
+        secondMonkey, includesHuman = getMonkeyValue(secondName, monkeys, includesHuman)
         value = 0
         if opp == '+':
             value = firstMonkey + secondMonkey
@@ -32,22 +34,39 @@ def getMonkeyValue(name, monkeys):
             value = firstMonkey * secondMonkey
         else:
             value = firstMonkey / secondMonkey
-        return value
+        return value, includesHuman
 
 def getRootValue(lns):
     monkeys = getMonkeys(lns)
     
-    return int(getMonkeyValue("root", monkeys))
+    return int(getMonkeyValue("root", monkeys)[0])
+
+def findHumanValue(lns):
+    monkeys = getMonkeys(lns)
+    
+    rootMonkeyOne, _, rootMonkeyTwo = monkeys["root"]
+    monkeyOneValue, includesHuman = getMonkeyValue(rootMonkeyOne, monkeys)
+    goalNum = 0
+    if includesHuman:
+        goalNum = getMonkeyValue(rootMonkeyTwo, monkeys)[0]
+    else:
+        goalNum = monkeyOneValue
+
+    #Go backwards until hit human with goalNum
+
+    return goalNum
 
 def partA(puz):
     ans = getRootValue(lines)
     submit.safeSubmit(puz, ans, 'a')
 
 def partB(puz):
-    ans = 0
+    ans = findHumanValue(lines)
     submit.safeSubmit(puz, ans, 'b')
 
-print(getMonkeys(puz.example_data.splitlines()))
-print(getRootValue(puz.example_data.splitlines()))
-partA(puz)
+#print(getMonkeys(puz.example_data.splitlines()))
+#print(getRootValue(puz.example_data.splitlines()))
+#print(54703080378102)
+#partA(puz)
+print(findHumanValue(puz.example_data.splitlines()))
 #partB(puz)
