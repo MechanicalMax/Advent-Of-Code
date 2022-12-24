@@ -1,3 +1,6 @@
+#Finally an easier one! Part a was straightforward with recursion
+#My solution to part b could be refactored, but it still works
+#fast
 import AoCHelpers.setupUtilities.submition as submit
 import AoCHelpers.setupUtilities.getPuzzleObject as getPuzzle
 from aocd import lines
@@ -38,23 +41,55 @@ def getMonkeyValue(name, monkeys, includesHuman = False):
 
 def getRootValue(lns):
     monkeys = getMonkeys(lns)
-    
     return int(getMonkeyValue("root", monkeys)[0])
+
+def getInverseValue(name, equalTo, monkeys):
+    leftMonkey, opp, rightMonkey = monkeys[name]
+    solveForLeft = False
+    value = 0
+
+    leftMonkeyValue, includesHuman = getMonkeyValue(leftMonkey, monkeys)
+    if includesHuman:
+        rightMonkeyValue = getMonkeyValue(rightMonkey, monkeys)[0]
+        solveForLeft = True
+
+    if solveForLeft:
+        if opp == '+':
+            value = equalTo - rightMonkeyValue
+        elif opp == '-':
+            value = equalTo + rightMonkeyValue
+        elif opp == '*':
+            value = equalTo / rightMonkeyValue
+        else:
+            value = equalTo * rightMonkeyValue
+    else:
+        if opp == '+':
+            value = equalTo - leftMonkeyValue
+        elif opp == '-':
+            value = leftMonkeyValue - equalTo
+        elif opp == '*':
+            value = equalTo / leftMonkeyValue
+        else:
+            value = leftMonkeyValue / equalTo
+    
+    if rightMonkey != 'humn' and leftMonkey != 'humn':    
+        value = getInverseValue(leftMonkey if solveForLeft else rightMonkey, value, monkeys)
+    return value
 
 def findHumanValue(lns):
     monkeys = getMonkeys(lns)
-    
     rootMonkeyOne, _, rootMonkeyTwo = monkeys["root"]
     monkeyOneValue, includesHuman = getMonkeyValue(rootMonkeyOne, monkeys)
     goalNum = 0
+    humnVal = 0
     if includesHuman:
         goalNum = getMonkeyValue(rootMonkeyTwo, monkeys)[0]
+        humnVal = getInverseValue(rootMonkeyOne, goalNum, monkeys)
     else:
         goalNum = monkeyOneValue
+        humnVal = getInverseValue(rootMonkeyTwo, goalNum, monkeys)
 
-    #Go backwards until hit human with goalNum
-
-    return goalNum
+    return int(humnVal)
 
 def partA(puz):
     ans = getRootValue(lines)
@@ -64,9 +99,5 @@ def partB(puz):
     ans = findHumanValue(lines)
     submit.safeSubmit(puz, ans, 'b')
 
-#print(getMonkeys(puz.example_data.splitlines()))
-#print(getRootValue(puz.example_data.splitlines()))
-#print(54703080378102)
-#partA(puz)
-print(findHumanValue(puz.example_data.splitlines()))
-#partB(puz)
+partA(puz)
+partB(puz)
